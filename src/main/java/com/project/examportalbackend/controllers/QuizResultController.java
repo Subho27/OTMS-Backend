@@ -1,11 +1,15 @@
 package com.project.examportalbackend.controllers;
 
+import com.project.examportalbackend.DTO.QuizResultDTO;
 import com.project.examportalbackend.models.Question;
 import com.project.examportalbackend.models.Quiz;
 import com.project.examportalbackend.models.QuizResult;
+import com.project.examportalbackend.models.User;
+import com.project.examportalbackend.repository.UserRepository;
 import com.project.examportalbackend.services.QuestionService;
 import com.project.examportalbackend.services.QuizResultService;
 import com.project.examportalbackend.services.QuizService;
+import com.project.examportalbackend.services.implementation.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +30,9 @@ public class QuizResultController {
 
     @Autowired
     private QuizResultService quizResultService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping(value = "/submit", params = {"userId", "quizId"})
     public ResponseEntity<?> submitQuiz(@RequestParam Long userId, @RequestParam Long quizId, @RequestBody HashMap<String,String> answers) {
@@ -68,7 +75,18 @@ public class QuizResultController {
     @GetMapping(value = "/all")
     public ResponseEntity<?> getQuizResults(){
         List<QuizResult> quizResultsList =  quizResultService.getQuizResults();
-        Collections.reverse(quizResultsList);
-        return ResponseEntity.ok(quizResultsList);
+        List<QuizResultDTO> students = new ArrayList<>();
+        for(QuizResult quizResults : quizResultsList) {
+            User user = userRepository.findUserByUserId(quizResults.getUserId());
+            QuizResultDTO student = new QuizResultDTO();
+            student.setName(user.getFirstName() + " " + user.getLastName());
+            student.setAttemptDatetime(quizResults.getAttemptDatetime());
+            student.setQuiz(quizResults.getQuiz());
+            student.setQuizResId(quizResults.getQuizResId());
+            student.setTotalObtainedMarks(quizResults.getTotalObtainedMarks());
+            students.add(student);
+        }
+        Collections.reverse(students);
+        return ResponseEntity.ok(students);
     }
 }
