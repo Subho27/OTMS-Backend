@@ -30,7 +30,7 @@
 
     - name: Run Docker container
       docker_container:
-        name: calculator_backend_container
+        name: otms_backend_container
         image: subhodip703/otms-backend
         state: started
         restart_policy: always
