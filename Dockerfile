@@ -9,7 +9,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Build the Maven project
-RUN mvn clean package
+RUN mvn clean compile
 
 # Use the official OpenJDK image as the base image for the final runtime image
 FROM openjdk:17-jdk-alpine
