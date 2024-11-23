@@ -1,6 +1,7 @@
 package com.project.examportalbackend.controllers;
 
 import com.project.examportalbackend.models.Category;
+import com.project.examportalbackend.repository.CategoryRepository;
 import com.project.examportalbackend.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
